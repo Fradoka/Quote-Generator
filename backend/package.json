@@ -1,4 +1,10 @@
 {
+  "name": "quote-generator",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node app2.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0"
