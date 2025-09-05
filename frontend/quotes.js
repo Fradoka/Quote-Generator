@@ -13,7 +13,7 @@ let interval;
 async function resetQuote(){
 
   try {
-    const res = await fetch("http://127.0.0.1:3000/");
+    const res = await fetch("https://fradoka-quote-generator-backend.hosting.codeyourfuture.io");
     const data = await res.json();
     quoteText.innerText = `"${data.quote}"`;
     authorText.innerText = `By ${data.author}`;
