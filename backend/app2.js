@@ -493,11 +493,15 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res) => {
   const { quote, author } = req.body;
-  if (!quote || !author) {
+  const quoteText = (quote || "").trim();
+  const authorText = (author || "").trim();
+
+  if (!quoteText || !authorText) {
     return res.status(400).json({ error: "Both quote and author are required." });
   }
-  quotes.push({ quote, author });
-  res.json({ message: "ok", quote, author });
+
+  quotes.push({ quote: quoteText, author: authorText });
+  res.json({ message: "ok", quote: quoteText, author: authorText });
 });
 
 

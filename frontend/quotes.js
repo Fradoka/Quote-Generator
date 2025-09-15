@@ -47,12 +47,11 @@ async function addQuote(event) {
         })
       });
 
+      const data = await response.json(); 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Failed to add quote");
+      // show backend error
+        throw new Error(data.error || "Failed to add quote");
       }
-
-      const data = await response.json();
       console.log("Quote saved:", data);
 
       // Reset fields after successful save
