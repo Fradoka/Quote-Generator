@@ -6,6 +6,10 @@ const authorText = document.querySelector("#author");
 const newQuoteBtn = document.querySelector("#new-quote");
 const checkBox = document.querySelector("#autoOnOff");
 const onOffDisplay = document.querySelector("#onOff");
+const addQuoteForm = document.querySelector("#add-quote-form");
+const newQuoteInput = document.querySelector("#new-quote-text");
+const newAuthorInput = document.querySelector("#new-quote-author");
+const addQuoteButton = document.querySelector("#add-quote-button");
 let interval;
 
 // Defining Functions to be used
@@ -24,6 +28,48 @@ async function resetQuote(){
   }
 }
 
+async function addQuote(event) {
+  event.preventDefault();
+
+  const newQuote = newQuoteInput.value.trim();
+  const newAuthor = newAuthorInput.value.trim();
+
+  if (newQuote && newAuthor) {
+    try {
+      const response = await fetch("https://fradoka-quote-generator-backend.hosting.codeyourfuture.io", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          quote: newQuote,
+          author: newAuthor
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to add quote");
+      }
+
+      const data = await response.json();
+      console.log("Quote saved:", data);
+
+      // Reset fields after successful save
+      newQuoteInput.value = "";
+      newAuthorInput.value = "";
+
+      alert("Quote added successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong. Please try again.");
+    }
+  } else {
+    alert("Please fill in both fields.");
+  }
+}
+
+
 function autoPlayer(){
   if (checkBox.checked){
     onOffDisplay.innerText = `Auto-play is On`;
@@ -39,3 +85,4 @@ function autoPlayer(){
 resetQuote();
 newQuoteBtn.addEventListener("click", resetQuote);
 checkBox.addEventListener("change", autoPlayer);
+addQuoteForm.addEventListener("submit", addQuote); 

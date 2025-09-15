@@ -4,6 +4,7 @@ import cors from "cors";
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(cors());
+app.use(express.json());
 
 // A list of quotes you can use in your app.
 const quotes = [
@@ -491,30 +492,14 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  const bodyBytes = [];
-  req.on("data", chunk => bodyBytes.push(...chunk));
-  req.on("end", () => {
-    const bodyString = String.fromCharCode(...bodyBytes);
-    let body;
-    try {
-      body = JSON.parse(bodyString);
-    } catch (error) {
-      console.error(`Failed to parse body ${bodyString} as JSON: ${error}`);
-      res.status(400).send("Expected body to be JSON.");
-      return;
-    }
-    if (typeof body != "object" || !("quote" in body) || !("author" in body)) {
-      console.error(`Failed to extract quote and author from post body: ${bodyString}`);
-      res.status(400).send("Expected body to be a JSON object containing keys quote and author.");
-      return;
-    }
-    quotes.push({
-      quote: body.quote,
-      author: body.author,
-    });
-    res.send("ok");
-  });
+  const { quote, author } = req.body;
+  if (!quote || !author) {
+    return res.status(400).json({ error: "Both quote and author are required." });
+  }
+  quotes.push({ quote, author });
+  res.json({ message: "ok", quote, author });
 });
+
 
 app.listen(port, () => {
   console.error(`Quote server listening on port ${port}`);
